@@ -1,0 +1,87 @@
+<!-- res/layout/activity_profile.xml -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="240dp"
+        android:layout_height="217dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dream_journal_icon"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="24dp"/>
+
+    <TextView
+        android:id="@+id/editProfileTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileImageView"
+        android:layout_centerHorizontal="true"
+        android:text="Edit Profile"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"/>
+
+    <EditText
+        android:id="@+id/firstNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editProfileTextView"
+        android:hint="First Name"
+        android:textSize="22sp"
+        android:layout_marginTop="32dp"/>
+
+    <EditText
+        android:id="@+id/lastNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/firstNameEditText"
+        android:hint="Last Name"
+        android:textSize="22sp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/phoneNumberEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lastNameEditText"
+        android:hint="Phone Number"
+        android:textSize="22sp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneNumberEditText"
+        android:hint="User Name"
+        android:textSize="22sp"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameEditText"
+        android:text="Update"
+        android:textSize="21sp"
+        android:background="@android:color/holo_orange_light"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="24dp"/>
+
+    <Button
+        android:id="@+id/addJournalEntryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateButton"
+        android:text="Add New Journal Entry"
+        android:textSize="21sp"
+        android:background="@android:color/holo_orange_light"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="24dp"/>
+
+</RelativeLayout>
