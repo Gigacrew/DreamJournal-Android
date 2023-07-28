@@ -1,10 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-<<<<<<< HEAD
-=======
     id 'kotlin-kapt'
->>>>>>> 41bed38 (user table Port-84)
 }
 
 android {
