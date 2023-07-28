@@ -23,14 +23,14 @@ interface UserDAO {
     fun getAllUser(): LiveData<List<User>>
 
         // Get a user by ID
-        @Query("SELECT * FROM UserTable WHERE user_id = :userId")
-        suspend fun getUserById(userId: Int): User?
+    @Query("SELECT * FROM UserTable WHERE user_id = :userId")
+    suspend fun getUserById(userId: Int): User?
 
         // Update a user
-        @Query("UPDATE UserTable SET username = :username, firstname = :firstname, " +
+    @Query("UPDATE UserTable SET username = :username, firstname = :firstname, " +
                 "lastname = :lastname, email = :email, password = :password, " +
                 "phone_number = :phoneNumber WHERE user_id = :userId")
-         suspend fun updateUser(
+    suspend fun updateUser(
             userId: Int,
             username: String,
             firstname: String,

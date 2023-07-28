@@ -11,13 +11,10 @@ abstract class AppDatabase : RoomDatabase(){
     abstract fun dreamDAO(): DreamDAO
 
     companion object{
-
         @Volatile
         private var INSTANCE: AppDatabase? = null
-
         fun getDatabase(context: Context): AppDatabase {
             if (INSTANCE == null) {
-
                 synchronized(this) {
                     INSTANCE = Room.databaseBuilder(
                         context,
@@ -28,8 +25,5 @@ abstract class AppDatabase : RoomDatabase(){
             }
             return INSTANCE!!
         }
-
     }
-
-
 }
