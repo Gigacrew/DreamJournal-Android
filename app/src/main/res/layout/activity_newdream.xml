@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="@android:color/white">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    tools:ignore="ExtraText">
 
     <TextView
         android:layout_width="396dp"
@@ -14,14 +15,13 @@
         android:text="ADD NEW DREAM"
         android:textSize="24sp" />
 
-    <!-- Title Text Field -->
     <EditText
         android:id="@+id/titleEditText"
         android:layout_width="376dp"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="610dp"
-        android:background="@color/cardview_dark_background"
+        android:background="#E0E0E0"
         android:hint="type here" />
 
     <!-- Add Description Title -->
@@ -43,7 +43,7 @@
         android:layout_marginBottom="443dp"
         android:hint="type here"
         android:inputType="textMultiLine"
-        android:background="@color/cardview_dark_background"
+        android:background="#E0E0E0"
         android:minLines="4" />
 
     <!-- Add Category Title -->
@@ -56,77 +56,66 @@
         android:textSize="18sp" />
 
     <!-- Add Feeling Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="360dp"
+        android:text="Add Feeling"
+        android:textSize="18sp"/>
 
     <!-- Feelings Checkboxes -->
-    <TextView
-        android:layout_width="382dp"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="309dp"
-        android:text="Add Feeling"
-        android:textSize="18sp" />
-
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="3"/>
+        android:columnCount="3"
+        android:rowCount="2"
+        android:layout_marginBottom="200dp"
+        android:layout_alignParentBottom="true">
 
-    <CheckBox
-        android:id="@+id/checkboxHappy"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="236dp"
-        android:text="Happy" />
+        <CheckBox
+            android:id="@+id/checkboxHappy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Happy"
+            android:layout_margin="18dp" />
 
-    <CheckBox
-        android:id="@+id/checkboxSad"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="156dp"
-        android:layout_marginBottom="236dp"
-        android:text="Sad" />
+        <CheckBox
+            android:id="@+id/checkboxSad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sad"
+            android:layout_margin="18dp" />
 
-    <CheckBox
-        android:id="@+id/checkboxAngry"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="236dp"
-        android:text="Angry" />
+        <CheckBox
+            android:id="@+id/checkboxAngry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Angry"
+            android:layout_margin="18dp" />
 
-    <CheckBox
-        android:id="@+id/checkboxGuilt"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="177dp"
-        android:text="Guilt" />
+        <CheckBox
+            android:id="@+id/checkboxGuilt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guilt"
+            android:layout_margin="18dp" />
 
-    <CheckBox
-        android:id="@+id/checkboxFear"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="156dp"
-        android:layout_marginBottom="177dp"
-        android:text="Fear" />
+        <CheckBox
+            android:id="@+id/checkboxFear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fear"
+            android:layout_margin="18dp" />
 
-    <CheckBox
-        android:id="@+id/checkboxAnxiety"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="177dp"
-        android:text="Anxiety" />
+        <CheckBox
+            android:id="@+id/checkboxAnxiety"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anxiety"
+            android:layout_margin="18dp" />
+
+    </GridLayout>
 
     <!-- Add Image Title -->
     <TextView
@@ -159,6 +148,5 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="643dp"
         android:text="Save" />
-
 
 </RelativeLayout>
