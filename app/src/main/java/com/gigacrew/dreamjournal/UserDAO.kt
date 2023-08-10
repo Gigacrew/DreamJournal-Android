@@ -26,6 +26,9 @@ interface UserDAO {
     @Query("SELECT * FROM UserTable WHERE user_id = :userId")
     suspend fun getUserById(userId: Int): User?
 
+    // Get A user from their Login Credentials of a username and password
+    @Query("SELECT * FROM UserTable WHERE username= :username AND password= :password")
+    suspend fun getUserByLoginCredentials(username: String,password: String):User?
         // Update a user
     @Query("UPDATE UserTable SET username = :username, firstname = :firstname, " +
                 "lastname = :lastname, email = :email, password = :password, " +

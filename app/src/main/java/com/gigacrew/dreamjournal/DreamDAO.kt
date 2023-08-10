@@ -34,7 +34,7 @@ interface DreamDAO {
         title: String,
         recurringDream: Boolean,
         imageURL: String,
-        feeling: String,
+        feeling: ArrayList<String>,
         dreamDescription: String,
         category: String,
         date: String

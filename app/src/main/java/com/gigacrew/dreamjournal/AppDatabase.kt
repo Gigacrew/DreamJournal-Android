@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(entities = [User::class, Dream::class], version = 1,  exportSchema = false)
+@TypeConverters(ArrayListConverter::class)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun userDao() : UserDAO
     abstract fun dreamDAO(): DreamDAO

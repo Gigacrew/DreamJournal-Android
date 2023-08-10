@@ -27,16 +27,19 @@ DreamListAdapter.OnDeleteClickListener{
         super.onCreate(savedInstanceState)
         binding = ActivityDreamListViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        database = AppDatabase.getDatabase(this)
+        val loggedInUserID = intent.getIntExtra("userID",0)
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dreamRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.dreamRecyclerView.adapter = dreamListAdapter
-        currentUser = User(3,"edonn","Eric","Donnelly","eric@example.com","password","9051234567")
-        // TODO: current user should be set by taking the user from the login field
-        database = AppDatabase.getDatabase(this)
+        GlobalScope.launch {
+            currentUser = database.userDao().getUserById(loggedInUserID)!!
+        }
+
         fetchDreams()
         binding.TEMPbutton.setOnClickListener{
             val intent = Intent(this,AddNewDreamActivity::class.java)
+            intent.putExtra("userID",currentUser.user_id)
             startActivity(intent)
         }
     }
@@ -45,6 +48,7 @@ DreamListAdapter.OnDeleteClickListener{
         GlobalScope.launch (Dispatchers.Main){
             try {
                 val response = withContext(Dispatchers.IO){
+                    Log.i("Dreams", "User Logged In , $currentUser")
                     database.dreamDAO().getAllDreamsForUser(currentUser.user_id) //
                 }
                 dreams.clear()

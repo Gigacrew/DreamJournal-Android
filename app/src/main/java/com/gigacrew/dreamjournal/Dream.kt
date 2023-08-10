@@ -11,7 +11,7 @@ data class Dream(
     val title: String,
     val recurringDream: Boolean,
     val imageURL: String,
-    val feeling: String,
+    val feeling: ArrayList<String>,
     val dream_description: String,
     val date: String,
     var category: String
