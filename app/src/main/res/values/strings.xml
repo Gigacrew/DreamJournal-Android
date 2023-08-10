@@ -16,4 +16,21 @@
     <string name="upload">Upload</string>
     <string name="AddDream">Add Dream</string>
     <string name="recurring_dream">Recurring Dream?</string>
+    <string name="RegistrationHeading">Sign Up</string>
+    <string name="first_nameLabel">First Name</string>
+    <string name="last_nameLabel">Last Name</string>
+    <string name="emailLabel">Email</string>
+    <string name="passwordLabel">Password</string>
+    <string name="confirmPasswordLabel">Confirm Password</string>
+    <string name="first_nameHint">Your First Name</string>
+    <string name="last_nameHint">Your Last Name</string>
+    <string name="emailHint">Your Email</string>
+    <string name="passwordHint">Enter Password</string>
+    <string name="confirmPasswordHint">Confirm Password</string>
+    <string name="termsDisclaimer"><![CDATA[By signing up you agree to our Terms & Conditions and our Privacy Policy.*]]></string>
+    <string name="continueBtnText">Continue</string>
+    <string name="already_signed_up">Already Signed Up?</string>
+    <string name="login_here">Login Here</string>
+    <string name="usernameLabel">Username</string>
+    <string name="usernameHint">Your username</string>
 </resources>

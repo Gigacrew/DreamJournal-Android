@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RegistrationActivity"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:id="@+id/RegistrationHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/RegistrationHeading"
+        android:textSize="28sp"
+        android:layout_margin="@dimen/marginVert"/>
+
+    <TextView
+        android:id="@+id/firstNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/first_nameLabel"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginTop="@dimen/marginVert"/>
+
+    <EditText
+        android:id="@+id/firstNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/first_nameHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+
+    <TextView
+        android:id="@+id/lastNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/LabelSize"
+        android:text="@string/last_nameLabel"
+        android:layout_marginTop="@dimen/marginVert"
+        />
+
+    <EditText
+        android:id="@+id/lastNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/last_nameHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+
+    <TextView
+        android:id="@+id/usernameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/usernameLabel"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginTop="@dimen/marginVert"/>
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="@string/usernameHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/emailLabel"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginTop="@dimen/marginVert"/>
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="@string/emailHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+
+    <TextView
+        android:id="@+id/passwordLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/passwordLabel"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginTop="@dimen/marginVert"
+        />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/passwordHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+    <TextView
+        android:id="@+id/confirmPasswordLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirmPasswordLabel"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginTop="@dimen/marginVert"/>
+
+    <EditText
+        android:id="@+id/confirmPasswordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/confirmPasswordHint"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+    <TextView
+        android:id="@+id/termsAndConditionsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/termsDisclaimer"
+        android:textSize="14sp"
+        android:layout_marginTop="@dimen/marginVert"/>
+
+    <Button
+        android:id="@+id/continueBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/continueBtnText"
+        android:padding="@dimen/entryPadding"
+        android:layout_marginVertical="@dimen/marginVert"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/signedUpText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/already_signed_up"
+            android:textSize="@dimen/LabelSize"
+            android:layout_marginTop="@dimen/marginVert"/>
+
+        <TextView
+            android:id="@+id/loginConnectorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/login_here"
+            android:textSize="@dimen/LabelSize"
+            android:layout_marginTop="@dimen/marginVert"/>
+    </LinearLayout>
+
+
+</LinearLayout>

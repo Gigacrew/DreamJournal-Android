@@ -2,5 +2,6 @@
 <resources>
     <dimen name="marginVert">8dp</dimen>
     <dimen name="minHeight">48dp</dimen>
-    <dimen name="LabelSize">18sp</dimen>
+    <dimen name="LabelSize">14sp</dimen>
+    <dimen name="entryPadding">12dp</dimen>
 </resources>
