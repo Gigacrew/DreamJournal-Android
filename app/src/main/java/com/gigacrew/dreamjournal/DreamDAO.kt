@@ -18,7 +18,7 @@ interface DreamDAO {
 
     // Get all dreams for a specific user
     @Query("SELECT * FROM DreamEntryTable WHERE user_id = :userId")
-    fun getAllDreamsForUser(userId: Int): LiveData<List<Dream>>
+    fun getAllDreamsForUser(userId: Int): List<Dream>
 
     // Delete a dream
     @Query("DELETE FROM DreamEntryTable WHERE dream_id = :dreamId")
@@ -34,7 +34,7 @@ interface DreamDAO {
         title: String,
         recurringDream: Boolean,
         imageURL: String,
-        feeling: String,
+        feeling: ArrayList<String>,
         dreamDescription: String,
         category: String,
         date: String
