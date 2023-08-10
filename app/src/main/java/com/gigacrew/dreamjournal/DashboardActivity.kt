@@ -1,5 +1,8 @@
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.ImageButton
@@ -76,8 +79,27 @@ class DashboardActivity : AppCompatActivity() {
     }
 }
 
-class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // Inflate the item layout and return a ViewHolder
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.activity_dashboard, parent, false)
+        return ViewHolder(itemView)
+    }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // Bind data to the views inside the ViewHolder
+        // You can use 'position' to retrieve the corresponding data
+    }
+
+    override fun getItemCount(): Int {
+        // Return the number of items in your data set
+        return 0 // Replace with the actual count
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // Initialize your views here
+    }
 }
+
