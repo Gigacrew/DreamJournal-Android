@@ -31,7 +31,7 @@ DreamListAdapter.OnDeleteClickListener{
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dreamRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.dreamRecyclerView.adapter = dreamListAdapter
-        currentUser = User(3,"edonn","Eric","Donnelly","eric@example.com","password","9051234567")
+        currentUser = User(0,"edonn","Eric","Donnelly","eric@example.com","password","9051234567")
         // TODO: current user should be set by taking the user from the login field
         database = AppDatabase.getDatabase(this)
         fetchDreams()

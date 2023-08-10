@@ -1,5 +1,6 @@
 package com.gigacrew.dreamjournal
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -96,6 +97,11 @@ class AddNewDreamActivity : AppCompatActivity() {
             val description = descriptionEditText.text.toString()
             val recurringDream = recurringSwitch.isChecked
 
+            if (title.isEmpty() || description.isEmpty()) {
+                // Show an error message or toast indicating validation failure
+                showToast("Title and description are required.")
+                return@setOnClickListener
+            }
             // Create an ArrayMap to hold the emotions and their checkbox values
             val feelingsChecked = ArrayMap<String, Boolean>().apply {
                 put("Happy", checkboxHappy.isChecked)
@@ -121,6 +127,9 @@ class AddNewDreamActivity : AppCompatActivity() {
             )
             GlobalScope.launch(Dispatchers.IO) {
                 database.dreamDAO().insertDream(newDream)
+                showToast("Dream Added Successfully")
+                startActivity(Intent(this@AddNewDreamActivity, DreamListViewActivity::class.java))
+                finish()
             }
         }
     }
