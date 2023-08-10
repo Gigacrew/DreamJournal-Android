@@ -1,15 +1,19 @@
 package com.gigacrew.dreamjournal
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.gigacrew.dreamjournal.databinding.ActivityLoginBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class Login : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var logUsernameEditText: EditText
     private lateinit var logPasswordEditText: EditText
@@ -19,19 +23,26 @@ class Login : AppCompatActivity() {
     private lateinit var fbLoginButton: ImageButton
     private lateinit var googleLoginButton: ImageButton
     private lateinit var createAccountTextView: TextView
+    
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        logUsernameEditText = findViewById(R.id.logusername)
-        logPasswordEditText = findViewById(R.id.logpass)
-        loginButton = findViewById(R.id.loginbtn)
-        forgotPasswordTextView = findViewById(R.id.fpass)
-        appleLoginButton = findViewById(R.id.iloginbtn)
-        fbLoginButton = findViewById(R.id.fbloginbtn)
-        googleLoginButton = findViewById(R.id.googleloginbtn)
-        createAccountTextView = findViewById(R.id.cracttv)
+        database = AppDatabase.getDatabase(this)
+
+        logUsernameEditText = binding.logusername
+        logPasswordEditText = binding.logpass
+        loginButton = binding.loginbtn
+        forgotPasswordTextView = binding.fpass
+        appleLoginButton = binding.iloginbtn
+        fbLoginButton = binding.fbloginbtn
+        googleLoginButton = binding.googleloginbtn
+        createAccountTextView = binding.cracttv
+
 
         // Add click listener for the login button
         loginButton.setOnClickListener {
@@ -39,13 +50,16 @@ class Login : AppCompatActivity() {
             val username = logUsernameEditText.text.toString()
             val password = logPasswordEditText.text.toString()
 
-            // Perform your login logic here, e.g., make an API call to validate credentials
-            // For simplicity, let's just display a toast message indicating successful login
-            if (isValidCredentials(username, password)) {
-                showToast("Login successful!")
-                // Navigate to the main activity or the next screen after successful login
-            } else {
-                showToast("Invalid credentials. Please try again.")
+            GlobalScope.launch(Dispatchers.IO) {
+                val user = database.userDao().getUserByLoginCredentials(username, password)
+                if (user != null) {
+                    // TODO: THIS IS JUST FOR NOW, UPDATE TO DASHBOARD WHEN VIEW IS COMPLETE
+                    val intent = Intent(this@LoginActivity, DreamListViewActivity::class.java)
+                    intent.putExtra("userID", user.user_id)
+                    startActivity(intent)
+                } else {
+                    showToast("Invalid credentials. Please try again.")
+                }
             }
         }
 
@@ -74,18 +88,11 @@ class Login : AppCompatActivity() {
 
         // Add click listener for the create account TextView
         createAccountTextView.setOnClickListener {
-            // Implement the logic for creating a new account
-            // For example, navigate to the registration activity
-            showToast("Create account clicked.")
+            val intent = Intent(this,RegistrationActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    // Placeholder method for validating credentials
-    private fun isValidCredentials(username: String, password: String): Boolean {
-        // Add your logic to validate the username and password
-        // For demonstration purposes, let's assume valid credentials for "user123" and "pass123"
-        return username == "user123" && password == "pass123"
-    }
 
     // Helper method to show a toast message
     private fun showToast(message: String) {
