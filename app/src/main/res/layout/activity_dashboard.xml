@@ -54,7 +54,7 @@
         android:layout_height="51dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
-        android:text="Search your dreams"
+        android:text="@string/search_your_dreams"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText">
 
@@ -67,10 +67,10 @@
         android:layout_marginStart="260dp"
         android:layout_marginTop="68dp"
         android:backgroundTint="@color/lightGrey"
-        android:text="View All >"
+        android:text="@string/view_all"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button5" />
+        app:layout_constraintTop_toBottomOf="@+id/seeAllDreamsBtn" />
 
     <View
         android:id="@+id/view"
@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/seeAllDreamsBtn"
         android:layout_width="260dp"
         android:layout_height="137dp"
         android:layout_marginStart="16dp"
@@ -106,10 +106,11 @@
         android:text="+"
         android:textColor="@color/black"
         android:textSize="35dp"
-        app:layout_constraintStart_toEndOf="@+id/button5"
+        app:layout_constraintStart_toEndOf="@+id/seeAllDreamsBtn"
         app:layout_constraintTop_toBottomOf="@+id/filterButton" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dashboardRecyclerView"
         android:layout_width="400dp"
         android:layout_height="307dp"
         android:layout_marginTop="17dp"

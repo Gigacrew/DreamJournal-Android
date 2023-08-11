@@ -1,5 +1,8 @@
-import android.annotation.SuppressLint
+package com.gigacrew.dreamjournal
+
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +12,21 @@ import android.widget.ImageButton
 import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
-import com.gigacrew.dreamjournal.R
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.gigacrew.dreamjournal.databinding.ActivityDashboardBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : AppCompatActivity(),
+    DreamListAdapter.OnItemClickListener,
+    DreamListAdapter.OnDeleteClickListener{
 
     private lateinit var menuButton: ImageButton
     private lateinit var welcomeText: TextView
@@ -23,42 +35,74 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
     private lateinit var viewAllButton: Button
     private lateinit var addButton: Button
-    private lateinit var recyclerView: RecyclerView
 
-    @SuppressLint("MissingInflatedId")
+    private lateinit var binding: ActivityDashboardBinding
+    private lateinit var database: AppDatabase
+    private lateinit var loggedInUser: User
+    private val dreams: ArrayList<Dream> = ArrayList()
+    private lateinit var dreamListAdapter:DreamListAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        database = AppDatabase.getDatabase(this)
+
+
+        GlobalScope.launch(Dispatchers.Main) {
+            loggedInUser = database.userDao().getUserById(intent.getIntExtra("userID", 0))!!
+
+            fetchDreams()
+            welcomeText.text = "Welcome Back, ${loggedInUser.firstname}"
+        }
 
         // Initialize your views
-        menuButton = findViewById(R.id.menuButton)
-        welcomeText = findViewById(R.id.welcomeText)
-        profileButton = findViewById(R.id.profileButton)
-        filterButton = findViewById(R.id.filterButton)
-        searchView = findViewById(R.id.searchView)
-        viewAllButton = findViewById(R.id.viewAllButton)
-        addButton = findViewById(R.id.addButton)
-        recyclerView = findViewById(R.id.recyclerView)
+        menuButton = binding.menuButton
+        welcomeText = binding.welcomeText
+        profileButton = binding.profileButton
+        filterButton = binding.filterButton
+        searchView = binding.searchView
+        viewAllButton = binding.viewAllButton
+        addButton = binding.addButton
 
-        // Set up RecyclerView
-        val layoutManager: LayoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        dreamListAdapter = DreamListAdapter(dreams,this,this)
+        binding.dashboardRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.dashboardRecyclerView.adapter = dreamListAdapter
+
+
+
+
 
 
         menuButton.setOnClickListener { /* Handle menu button click */ }
 
 
-        profileButton.setOnClickListener { /* Handle profile button click */ }
+        profileButton.setOnClickListener {
+            val intent = Intent(this,ProfileActivity::class.java)
+            intent.putExtra("userID",loggedInUser.user_id)
+            startActivity(intent)
+        }
 
 
         filterButton.setOnClickListener { /* Handle filter button click */ }
 
+        binding.seeAllDreamsBtn.setOnClickListener{
+            val intent = Intent(this,DreamListViewActivity::class.java)
+            intent.putExtra("userID",loggedInUser.user_id)
+            startActivity(intent)
+        }
+        viewAllButton.setOnClickListener {
+            val intent = Intent(this,DreamListViewActivity::class.java)
+            intent.putExtra("userID",loggedInUser.user_id)
+            startActivity(intent)
+        }
 
-        viewAllButton.setOnClickListener { /* Handle view all button click */ }
 
-
-        addButton.setOnClickListener {/* Handle add button click */ }
-
+        addButton.setOnClickListener {
+            val intent = Intent(this,AddNewDreamActivity::class.java)
+            intent.putExtra("userID",loggedInUser.user_id)
+            startActivity(intent)
+        }
 
 
         // Set a query listener for the search view
@@ -74,32 +118,44 @@ class DashboardActivity : AppCompatActivity() {
             }
         })
 
-        val adapter = RecyclerViewAdapter() // Replace with your adapter class
-        recyclerView.adapter = adapter
     }
+
+    override fun onResume() {
+        super.onResume()
+        fetchDreams()
+    }
+
+    override fun onItemClick(dream: Dream) {
+        val intent = Intent(this,AddNewDreamActivity::class.java)
+        intent.putExtra("dreamID", dream.dream_id)
+        intent.putExtra("userID",loggedInUser.user_id)
+        startActivity(intent)
+    }
+
+    override fun onDeleteClick(dream: Dream) {
+        TODO("Not yet implemented")
+    }
+
+    private fun fetchDreams() {
+        GlobalScope.launch(Dispatchers.Main) {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    Log.i("Dreams", "User Logged In , $loggedInUser")
+                    database.dreamDAO().getAllDreamsForUser(loggedInUser.user_id) //
+                }
+                dreams.clear()
+                dreams.addAll(response)
+                dreams.reverse()
+                dreams.subList(3,dreams.size).clear()
+                dreamListAdapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                displayErrorMessage("Failed to fetch dreams. Error: ${e.message}", "Fetch Error")
+            }
+        }
+    }
+    private fun displayErrorMessage(message: String,errorTag : String) {
+        Toast.makeText(this, "Error: $message", Toast.LENGTH_LONG).show()
+        Log.e(errorTag,"Failed to fetch dreams. Response code: $message" )
+    }
+
 }
-
-
-class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Inflate the item layout and return a ViewHolder
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.activity_dashboard, parent, false)
-        return ViewHolder(itemView)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Bind data to the views inside the ViewHolder
-        // You can use 'position' to retrieve the corresponding data
-    }
-
-    override fun getItemCount(): Int {
-        // Return the number of items in your data set
-        return 0 // Replace with the actual count
-    }
-
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Initialize your views here
-    }
-}
-

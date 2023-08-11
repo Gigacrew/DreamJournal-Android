@@ -1,53 +1,73 @@
+package com.gigacrew.dreamjournal
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.gigacrew.dreamjournal.R
+import com.gigacrew.dreamjournal.databinding.ActivityProfileBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileActivity : AppCompatActivity() {
-
-    private lateinit var editLabel: TextView
-    private lateinit var usernameTextfield: EditText
-    private lateinit var firstNameTextfield: EditText
-    private lateinit var lastNameTextfield: EditText
-    private lateinit var phoneNumberTextfield: EditText
-    private lateinit var updateButton: Button
-    private lateinit var addNewJournalButton: Button
+    private lateinit var binding: ActivityProfileBinding
+    private lateinit var database: AppDatabase
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        database = AppDatabase.getDatabase(this)
 
-        // Initialize views
-     /*   editLabel = findViewById(R.id.editLabel)
-        usernameTextfield = findViewById(R.id.usernameTextfield)
-        firstNameTextfield = findViewById(R.id.firstNameTextfield)
-        lastNameTextfield = findViewById(R.id.lastNameTextfield)
-        phoneNumberTextfield = findViewById(R.id.phoneNumberTextfield)
-        updateButton = findViewById(R.id.updateButton)
-        addNewJournalButton = findViewById(R.id.addNewJournalButton) */
+        lifecycleScope.launch {
+            // Retrieve user data from the database on the IO dispatcher
+            user = withContext(Dispatchers.IO) {
+                database.userDao().getUserById(intent.getIntExtra("userID", 0))
+            }!!
+            updateUIWithUserData()
+        }
 
-        // Retrieve data from intent or other sources and set them to the EditTexts
-        val username = "" // Get the username
-        val firstName = "" // Get the first name
-        val lastName = "" // Get the last name
-        val phoneNumber = "" // Get the phone number
 
-        usernameTextfield.setText(username)
-        firstNameTextfield.setText(firstName)
-        lastNameTextfield.setText(lastName)
-        phoneNumberTextfield.setText(phoneNumber)
+
 
         // Set click listeners for buttons (updateButton and addNewJournalButton) if needed
-        updateButton.setOnClickListener {
-            // Perform actions when updateButton is clicked
-            // Implement your update logic here
+        binding.updateButton.setOnClickListener {
+            GlobalScope.launch {
+                database.userDao().updateUser(
+                    userId = user.user_id,
+                    username= binding.usernameEditText.text.toString(),
+                    email = user.email,
+                    firstname = binding.firstNameEditText.text.toString(),
+                    lastname = binding.lastNameEditText.text.toString(),
+                    phoneNumber = binding.phoneNumberEditText.text.toString(),
+                    password = user.password
+                )
+            }
+            finish()
         }
 
-        addNewJournalButton.setOnClickListener {
-            // Perform actions when addNewJournalButton is clicked
-            // Implement your "Add New Journal Entry" logic here
+        binding.addJournalEntryButton.setOnClickListener {
+          val intent = Intent(this,AddNewDreamActivity::class.java)
+            intent.putExtra("userID",user.user_id)
+            startActivity(intent)
+            finish()
+
         }
     }
+        private fun updateUIWithUserData() {
+            val username = user.username
+            val firstName = user.firstname
+            val lastName = user.lastname
+            val phoneNumber = user.phone_number
+
+            binding.usernameEditText.setText(username)
+            binding.firstNameEditText.setText(firstName)
+            binding.lastNameEditText.setText(lastName)
+            binding.phoneNumberEditText.setText(phoneNumber)
+        }
 }

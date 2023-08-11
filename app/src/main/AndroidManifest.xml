@@ -23,12 +23,16 @@
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
         </activity>
+        <activity android:name=".DashboardActivity"
+            android:exported="true"/>
         <activity
             android:name=".DreamListViewActivity"
             android:exported="true" />
         <activity
             android:name=".AddNewDreamActivity"
             android:exported="true" />
+        <activity android:name=".ProfileActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -53,8 +53,7 @@ class LoginActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.IO) {
                 val user = database.userDao().getUserByLoginCredentials(username, password)
                 if (user != null) {
-                    // TODO: THIS IS JUST FOR NOW, UPDATE TO DASHBOARD WHEN VIEW IS COMPLETE
-                    val intent = Intent(this@LoginActivity, DreamListViewActivity::class.java)
+                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
                     intent.putExtra("userID", user.user_id)
                     startActivity(intent)
                 } else {
