@@ -29,6 +29,7 @@ interface DreamDAO {
             "imageURL = :imageURL, feeling = :feeling, dream_description = :dreamDescription, " +
             "category = :category, date = :date " +
             "WHERE dream_id = :dreamId")
+
      suspend fun updateDream(
         dreamId: Int,
         title: String,
