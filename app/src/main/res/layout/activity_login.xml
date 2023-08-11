@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/logpass"
+        android:id="@+id/loginPasswordEditText"
         android:layout_width="281dp"
         android:layout_height="50dp"
         android:layout_marginTop="13dp"
@@ -15,10 +15,10 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logusername" />
+        app:layout_constraintTop_toBottomOf="@+id/loginUsernameEditText" />
 
     <EditText
-        android:id="@+id/logusername"
+        android:id="@+id/loginUsernameEditText"
         android:layout_width="280dp"
         android:layout_height="49dp"
         android:layout_marginTop="20dp"
@@ -27,10 +27,10 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/logoHeaderImageView" />
 
     <TextView
-        android:id="@+id/fpass"
+        android:id="@+id/forgotPasswordTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -39,59 +39,62 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.826"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logpass" />
+        app:layout_constraintTop_toBottomOf="@+id/loginPasswordEditText" />
 
     <Button
-        android:id="@+id/loginbtn"
+        android:id="@+id/loginBtn"
         android:layout_width="280dp"
         android:layout_height="45dp"
         android:layout_marginTop="24dp"
         android:text="Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fpass" />
+        app:layout_constraintTop_toBottomOf="@+id/forgotPasswordTextField" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/SignUpSectionHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="-------Or Sign Up with------"
+        android:text="@string/signupSectionHeader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginbtn" />
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
 
     <ImageButton
-        android:id="@+id/iloginbtn"
-        android:layout_width="91dp"
-        android:layout_height="93dp"
+        android:id="@+id/appleLoginBtn"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
         android:layout_marginTop="40dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/fbloginbtn"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/fbLoginBtn"
+        app:layout_constraintTop_toBottomOf="@+id/SignUpSectionHeader"
         app:srcCompat="@drawable/appleicon" />
 
     <ImageButton
-        android:id="@+id/fbloginbtn"
-        android:layout_width="93dp"
-        android:layout_height="92dp"
+        android:id="@+id/fbLoginBtn"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toStartOf="@+id/iloginbtn"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/appleLoginBtn"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/googleloginbtn"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/googleLoginBtn"
+        app:layout_constraintTop_toBottomOf="@+id/SignUpSectionHeader"
         app:srcCompat="@drawable/fbicon" />
 
     <ImageButton
-        android:id="@+id/googleloginbtn"
-        android:layout_width="96dp"
-        android:layout_height="93dp"
+        android:id="@+id/googleLoginBtn"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toStartOf="@+id/fbloginbtn"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/fbLoginBtn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/SignUpSectionHeader"
         app:srcCompat="@drawable/google_logo" />
 
     <TextView
@@ -99,16 +102,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Not registered yet ?"
+        android:text="@string/not_registered_yet"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cracttv"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/createAccountTextView"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fbloginbtn"
+        app:layout_constraintTop_toBottomOf="@+id/fbLoginBtn"
         app:layout_constraintVertical_bias="0.024" />
 
     <TextView
-        android:id="@+id/cracttv"
+        android:id="@+id/createAccountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -117,11 +120,13 @@
         android:text="Create account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iloginbtn"
-        app:layout_constraintVertical_bias="0.012" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/appleLoginBtn"
+        app:layout_constraintVertical_bias="0.022" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logoHeaderImageView"
         android:layout_width="355dp"
         android:layout_height="154dp"
         android:layout_marginTop="36dp"
