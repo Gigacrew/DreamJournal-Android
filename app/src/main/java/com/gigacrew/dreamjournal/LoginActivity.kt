@@ -33,7 +33,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         database = AppDatabase.getDatabase(this)
-
         logUsernameEditText = binding.loginUsernameEditText
         logPasswordEditText = binding.loginPasswordEditText
         loginButton = binding.loginBtn
@@ -42,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
         fbLoginButton = binding.fbLoginBtn
         googleLoginButton = binding.googleLoginBtn
         createAccountTextView = binding.createAccountTextView
+
 
 
         // Add click listener for the login button

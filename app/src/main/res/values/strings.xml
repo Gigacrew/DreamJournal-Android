@@ -36,7 +36,6 @@
     <string name="add_new_dream">Add New Dream</string>
     <string name="not_registered_yet">Not registered yet ?</string>
     <string name="signupSectionHeader">-------Or Sign Up with------</string>
-
     <string-array name="dream_categories">
         <item>Choose Category from List</item>
         <item>Good Dream</item>
@@ -45,5 +44,4 @@
         <item>Freaky</item>
         <item>Confusing</item>
     </string-array>
-
 </resources>

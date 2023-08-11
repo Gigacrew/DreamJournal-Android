@@ -28,6 +28,7 @@ DreamListAdapter.OnDeleteClickListener{
         binding = ActivityDreamListViewBinding.inflate(layoutInflater)
         database = AppDatabase.getDatabase(this)
         setContentView(binding.root)
+        database = AppDatabase.getDatabase(this)
         val loggedInUserID = intent.getIntExtra("userID",0)
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dreamRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -38,7 +39,7 @@ DreamListAdapter.OnDeleteClickListener{
         fetchDreams()
         binding.newDreamButton.setOnClickListener{
             val intent = Intent(this,AddNewDreamActivity::class.java)
-            intent.putExtra("userID",loggedInUserID)
+            intent.putExtra("userID",currentUser.user_id)
             startActivity(intent)
         }
     }
@@ -47,6 +48,7 @@ DreamListAdapter.OnDeleteClickListener{
         GlobalScope.launch (Dispatchers.Main){
             try {
                 val response = withContext(Dispatchers.IO){
+                    Log.i("Dreams", "User Logged In , $currentUser")
                     database.dreamDAO().getAllDreamsForUser(currentUser.user_id) //
                 }
                 dreams.clear()

@@ -48,6 +48,7 @@ class AddNewDreamActivity : AppCompatActivity() {
         val userID = intent.getIntExtra("userID",0)
         val dreamID = intent.getIntExtra("dreamID",0)
 
+
         database = AppDatabase.getDatabase(this)
         titleEditText = binding.titleEditText
         descriptionEditText = binding.descriptionEditText
