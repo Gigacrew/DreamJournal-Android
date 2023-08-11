@@ -7,11 +7,18 @@
     android:orientation="vertical"
     tools:context=".DreamListViewActivity">
 
-    <Button
-        android:id="@+id/TEMPbutton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/newDreamButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_gravity="end"
+        android:layout_margin="24dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_new_dream"
+        android:focusable="true"
+        app:tint="@color/white"
+        app:backgroundTint="@color/primaryColour"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <TextView
         android:id="@+id/DreamListViewHeaderTitle"
@@ -25,5 +32,7 @@
         android:id="@+id/dreamRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
 
 </LinearLayout>

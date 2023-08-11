@@ -46,6 +46,7 @@ class AddNewDreamActivity : AppCompatActivity() {
         // TODO: Get the user_id from the intent that we get here from
 
         val userID = intent.getIntExtra("userID",0)
+        val dreamID = intent.getIntExtra("dreamID",0)
 
         database = AppDatabase.getDatabase(this)
         titleEditText = binding.titleEditText
@@ -61,13 +62,23 @@ class AddNewDreamActivity : AppCompatActivity() {
         uploadButton = binding.uploadButton
         saveButton = binding.saveButton
 
+
+        if (dreamID > 0) {
+
+            GlobalScope.launch {
+                 val dream = database.dreamDAO().getDreamById(dreamID)!!
+                setUpdateFields(dream)
+            }
+
+        }
+
         var selectedItem = ""
-        val categoryOptions = listOf("Choose Category from List","Good Dream","Sensual","Nightmare","Freaky","Confusing")
+        val categoryOptions = resources.getStringArray(R.array.dream_categories)
 
         val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,categoryOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-
+      
         category.adapter = adapter
 
         category.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -75,18 +86,13 @@ class AddNewDreamActivity : AppCompatActivity() {
                 if (position == 0) {
                     return
                 }
-
                  selectedItem = parent.getItemAtPosition(position) as String
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Do nothing here
             }
         }
-
-
-
         uploadButton.setOnClickListener {
             // code for upload image functionality
             showToast("Upload image functionality not implemented.")
@@ -115,23 +121,59 @@ class AddNewDreamActivity : AppCompatActivity() {
             // Build the feelingsCheckedArray using the selected emotions
             val feelingsCheckedArray = ArrayList<String>(buildFeelingsArray(feelingsChecked))
 
-            val newDream = Dream(
-                title = title,
-                dream_description = description,
-                recurringDream = recurringDream,
-                feeling = feelingsCheckedArray,
-                category = selectedItem,
-                date = getCurrentDateTimeFormatted(),
-                imageURL = "",
-                user_id = userID
-            )
-            GlobalScope.launch(Dispatchers.IO) {
-                database.dreamDAO().insertDream(newDream)
-                showToast("Dream Added Successfully")
-                startActivity(Intent(this@AddNewDreamActivity, DreamListViewActivity::class.java))
+            if (dreamID > 0) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    database.dreamDAO().updateDream(
+                        dreamId = dreamID,
+                        title = title,
+                        dreamDescription = description,
+                        recurringDream = recurringDream,
+                        feeling = feelingsCheckedArray,
+                        category = selectedItem,
+                        date = getCurrentDateTimeFormatted(),
+                        imageURL = "",
+                    )
+
+                }
+                showToast("Dream Updated Successfully")
+
                 finish()
+            } else {
+                val newDream = Dream(
+                    title = title,
+                    dream_description = description,
+                    recurringDream = recurringDream,
+                    feeling = feelingsCheckedArray,
+                    category = selectedItem,
+                    date = getCurrentDateTimeFormatted(),
+                    imageURL = "",
+                    user_id = userID
+                )
+                GlobalScope.launch(Dispatchers.IO) {
+                    database.dreamDAO().insertDream(newDream)
+                }
+                showToast("Dream Added Successfully")
+               finish()
             }
         }
+    }
+
+    private fun setUpdateFields(dream: Dream) {
+        titleEditText.setText(dream.title)
+        descriptionEditText.setText(dream.dream_description)
+        recurringSwitch.isChecked = dream.recurringDream
+        // Set checkboxes based on the feelings in the dream
+        checkboxHappy.isChecked = dream.feeling.contains("Happy")
+        checkboxSad.isChecked = dream.feeling.contains("Sad")
+        checkboxAngry.isChecked = dream.feeling.contains("Angry")
+        checkboxGuilt.isChecked = dream.feeling.contains("Guilt")
+        checkboxFear.isChecked = dream.feeling.contains("Fear")
+        checkboxAnxiety.isChecked = dream.feeling.contains("Anxiety")
+        // Set the selected category in the spinner
+        val categoryIndex = resources.getStringArray(R.array.dream_categories).indexOf(dream.category)
+        category.setSelection(categoryIndex)
+
+
     }
 
     private fun getCurrentDateTimeFormatted(): String {
@@ -147,7 +189,6 @@ class AddNewDreamActivity : AppCompatActivity() {
                 selectedFeelings.add(feeling)
             }
         }
-
         return selectedFeelings
     }
 

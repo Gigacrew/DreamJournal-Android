@@ -26,8 +26,8 @@ DreamListAdapter.OnDeleteClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDreamListViewBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         database = AppDatabase.getDatabase(this)
+        setContentView(binding.root)
         val loggedInUserID = intent.getIntExtra("userID",0)
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dreamRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -35,11 +35,10 @@ DreamListAdapter.OnDeleteClickListener{
         GlobalScope.launch {
             currentUser = database.userDao().getUserById(loggedInUserID)!!
         }
-
         fetchDreams()
-        binding.TEMPbutton.setOnClickListener{
+        binding.newDreamButton.setOnClickListener{
             val intent = Intent(this,AddNewDreamActivity::class.java)
-            intent.putExtra("userID",currentUser.user_id)
+            intent.putExtra("userID",loggedInUserID)
             startActivity(intent)
         }
     }
@@ -48,11 +47,11 @@ DreamListAdapter.OnDeleteClickListener{
         GlobalScope.launch (Dispatchers.Main){
             try {
                 val response = withContext(Dispatchers.IO){
-                    Log.i("Dreams", "User Logged In , $currentUser")
                     database.dreamDAO().getAllDreamsForUser(currentUser.user_id) //
                 }
                 dreams.clear()
                 dreams.addAll(response)
+                dreams.reverse()
                 dreamListAdapter.notifyDataSetChanged()
             }catch (e:Exception){
                 displayErrorMessage("Failed to fetch dreams. Error: ${e.message}","Fetch Error")
