@@ -1,152 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@android:color/white"
+    android:orientation="vertical"
+    android:padding="32dp"
     tools:ignore="ExtraText">
 
     <TextView
-        android:layout_width="396dp"
+        android:id="@+id/AddEditDreamHeading"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_gravity="center_horizontal"
-        android:text="ADD NEW DREAM"
+        android:text="@string/NewDreamHeading"
         android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/titleLabelTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_title"
+
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginVertical="@dimen/marginVert"/>
 
     <EditText
         android:id="@+id/titleEditText"
-        android:layout_width="376dp"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="610dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/minHeight"
+        android:inputType="text"
         android:background="#E0E0E0"
-        android:hint="type here" />
+         />
 
     <!-- Add Description Title -->
+
     <TextView
-        android:layout_width="387dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="545dp"
-        android:text="Add Description"
-        android:textSize="18sp" />
+        android:id="@+id/descriptionLabelTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/marginVert"
+        android:text="@string/add_description"
+        android:textSize="@dimen/LabelSize"  />
 
     <!-- Description Multiline Text Field -->
     <EditText
         android:id="@+id/descriptionEditText"
-        android:layout_width="395dp"
-        android:layout_height="89dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="443dp"
-        android:hint="type here"
-        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="#E0E0E0"
+        android:inputType="textMultiLine"
         android:minLines="4" />
 
     <!-- Add Category Title -->
     <TextView
-        android:layout_width="387dp"
-        android:layout_height="57dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="370dp"
-        android:text="Add Category"
-        android:textSize="18sp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/marginVert"
+        android:text="@string/add_category"
+        android:textSize="@dimen/LabelSize" />
+
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/minHeight"
+        />
 
     <!-- Add Feeling Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="360dp"
-        android:text="Add Feeling"
-        android:textSize="18sp"/>
+        android:text="@string/add_feeling"
+        android:textSize="@dimen/LabelSize" />
 
     <!-- Feelings Checkboxes -->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
-        android:rowCount="2"
-        android:layout_marginBottom="200dp"
-        android:layout_alignParentBottom="true">
+        android:rowCount="2">
 
         <CheckBox
             android:id="@+id/checkboxHappy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Happy"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/happy" />
 
         <CheckBox
             android:id="@+id/checkboxSad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sad"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/sad" />
 
         <CheckBox
             android:id="@+id/checkboxAngry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Angry"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/angry" />
 
         <CheckBox
             android:id="@+id/checkboxGuilt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Guilt"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/guilt" />
 
         <CheckBox
             android:id="@+id/checkboxFear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fear"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/fear" />
 
         <CheckBox
             android:id="@+id/checkboxAnxiety"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Anxiety"
-            android:layout_margin="18dp" />
+            android:layout_margin="18dp"
+            android:text="@string/anxiety" />
 
     </GridLayout>
 
     <!-- Add Image Title -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/recurringDreamSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recurring_dream" />
+
     <TextView
-        android:layout_width="395dp"
-        android:layout_height="46dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="113dp"
-        android:text="Add Image"
-        android:textSize="18sp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_image"
+        android:textSize="@dimen/LabelSize"
+        android:layout_marginVertical="@dimen/marginVert"/>
 
     <!-- Upload Button -->
     <Button
         android:id="@+id/uploadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="65dp"
-        android:text="Upload" />
+        android:text="@string/upload" />
 
     <!-- Save Button -->
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="643dp"
-        android:text="Save" />
+        android:layout_marginVertical="32dp"
+        android:text="@string/AddDream" />
 
-</RelativeLayout>
+</LinearLayout>

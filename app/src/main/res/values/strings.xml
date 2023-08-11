@@ -1,3 +1,47 @@
 <resources>
     <string name="app_name">DreamJournal</string>
+    <string name="add_title">Add Title</string>
+    <string name="NewDreamHeading">ADD NEW DREAM</string>
+    <string name="type_here">type here</string>
+    <string name="add_description">Add Description</string>
+    <string name="add_category">Add Category</string>
+    <string name="add_feeling">Add Feeling</string>
+    <string name="happy">Happy</string>
+    <string name="sad">Sad</string>
+    <string name="angry">Angry</string>
+    <string name="guilt">Guilt</string>
+    <string name="fear">Fear</string>
+    <string name="anxiety">Anxiety</string>
+    <string name="add_image">Add Image</string>
+    <string name="upload">Upload</string>
+    <string name="AddDream">Add Dream</string>
+    <string name="recurring_dream">Recurring Dream?</string>
+    <string name="RegistrationHeading">Sign Up</string>
+    <string name="first_nameLabel">First Name</string>
+    <string name="last_nameLabel">Last Name</string>
+    <string name="emailLabel">Email</string>
+    <string name="passwordLabel">Password</string>
+    <string name="confirmPasswordLabel">Confirm Password</string>
+    <string name="first_nameHint">Your First Name</string>
+    <string name="last_nameHint">Your Last Name</string>
+    <string name="emailHint">Your Email</string>
+    <string name="passwordHint">Enter Password</string>
+    <string name="confirmPasswordHint">Confirm Password</string>
+    <string name="termsDisclaimer"><![CDATA[By signing up you agree to our Terms & Conditions and our Privacy Policy.*]]></string>
+    <string name="continueBtnText">Continue</string>
+    <string name="already_signed_up">Already Signed Up?</string>
+    <string name="login_here">Login Here</string>
+    <string name="usernameLabel">Username</string>
+    <string name="usernameHint">Your username</string>
+    <string name="add_new_dream">Add New Dream</string>
+    <string name="not_registered_yet">Not registered yet ?</string>
+    <string name="signupSectionHeader">-------Or Sign Up with------</string>
+    <string-array name="dream_categories">
+        <item>Choose Category from List</item>
+        <item>Good Dream</item>
+        <item>Sensual</item>
+        <item>Nightmare</item>
+        <item>Freaky</item>
+        <item>Confusing</item>
+    </string-array>
 </resources>
