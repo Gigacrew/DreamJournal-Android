@@ -65,8 +65,7 @@ class AddNewDreamActivity : AppCompatActivity() {
 
 
         if (dreamID > 0) {
-
-            GlobalScope.launch {
+            GlobalScope.launch(Dispatchers.IO) {
                  val dream = database.dreamDAO().getDreamById(dreamID)!!
                 setUpdateFields(dream)
             }
@@ -137,7 +136,9 @@ class AddNewDreamActivity : AppCompatActivity() {
 
                 }
                 showToast("Dream Updated Successfully")
-
+                val intent = Intent(this@AddNewDreamActivity,DashboardActivity::class.java)
+                intent.putExtra("userID",userID)
+                startActivity(intent)
                 finish()
             } else {
                 val newDream = Dream(
@@ -154,6 +155,9 @@ class AddNewDreamActivity : AppCompatActivity() {
                     database.dreamDAO().insertDream(newDream)
                 }
                 showToast("Dream Added Successfully")
+                val intent = Intent(this@AddNewDreamActivity,DashboardActivity::class.java)
+                intent.putExtra("userID",userID)
+                startActivity(intent)
                finish()
             }
         }
