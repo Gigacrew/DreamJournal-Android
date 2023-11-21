@@ -48,13 +48,33 @@ class DashboardActivity : AppCompatActivity(),
         setContentView(binding.root)
         database = AppDatabase.getDatabase(this)
 
-
+       /* Previous code....
         GlobalScope.launch(Dispatchers.Main) {
             loggedInUser = database.userDao().getUserById(intent.getIntExtra("userID", 0))!!
 
             fetchDreams()
             welcomeText.text = "Welcome Back, ${loggedInUser.firstname}"
-        }
+        }*/
+
+//        val intent = intent
+//        val username = intent.getStringExtra("username")
+//        val firstName = intent.getStringExtra("firstName")
+//        val lastName = intent.getStringExtra("lastName")
+       // welcomeText.text = "Welcome Back, $firstName"
+        // Retrieve values from the Intent
+
+      //  val firstName = intent.getStringExtra("firstName")
+
+
+        // Assuming you have TextViews in your layout with IDs usernameTextView, firstNameTextView, lastNameTextView
+
+      //  val firstNameTextView: TextView = findViewById(R.id.firstNameTextView)
+
+
+        // Set the values to the TextViews
+
+      //  welcomeText.text = "First Name: $firstName"
+
 
         // Initialize your views
         menuButton = binding.menuButton
@@ -68,9 +88,6 @@ class DashboardActivity : AppCompatActivity(),
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dashboardRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.dashboardRecyclerView.adapter = dreamListAdapter
-
-
-
 
 
 

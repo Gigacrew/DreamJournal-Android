@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.gigacrew.dreamjournal.databinding.ActivityRegistrationBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -24,6 +26,8 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var continueBtn:Button
 
     private lateinit var database: AppDatabase
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firebaseDB: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +44,8 @@ class RegistrationActivity : AppCompatActivity() {
         confirmPassword = binding.confirmPasswordEditText
         continueBtn = binding.continueBtn
 
-
-
+        firebaseAuth = FirebaseAuth.getInstance()
+        firebaseDB = FirebaseFirestore.getInstance()
         continueBtn.setOnClickListener{
             val firstNameText = firstName.text.toString()
             val lastNameText = lastName.text.toString()
@@ -54,7 +58,60 @@ class RegistrationActivity : AppCompatActivity() {
             clearFieldErrors()
 
             var hasError = false
+            if (firstNameText.isNotEmpty() && lastNameText.isNotEmpty() && usernameText.isNotEmpty() && emailText.isNotEmpty() && passwordText.isNotEmpty() && confirmPasswordText.isNotEmpty()){
+                if (passwordText == confirmPasswordText){
+                    firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText)
+                        .addOnCompleteListener(this) {task ->
+                            if (task.isSuccessful){
 
+                                // User registration success
+                                val user = firebaseAuth.currentUser
+
+                                // Save additional user information to Firestore
+                                if (user != null) {
+                                    val userId = user.uid
+                                    val userMap = hashMapOf(
+                                        "username" to usernameText,
+                                        "firstname" to firstNameText,
+                                        "lastname" to lastNameText,
+                                        "email" to emailText
+                                    )
+
+
+                                    // Store user information in firestore
+                                    firebaseDB.collection("users").document(userId)
+                                        .set(userMap)
+                                        .addOnSuccessListener {
+                                            Log.d("TAG", "User information added to Firestore.")
+                                            // TODO: Handle successful registration and navigation
+                                            showToast("User Registered Successfully")
+                                            val intent = Intent(this,LoginActivity::class.java)
+                                            startActivity(intent)
+                                            finish()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.e("TAG", "Error adding user information to Firestore: $e")
+                                            // TODO: Handle registration failure
+                                            showToast("Data not Registered ")
+                                        }
+                                }
+
+
+
+
+
+                            }else{
+                                showToast("Unable to Register User")
+                            }
+
+                        }
+                }
+
+            }else{
+                showToast("Enter all the fields value")
+
+            }
+           /* Previous database code
             if (firstNameText.isEmpty()) {
                 hasError = true
                 firstName.error = "First name is required"
@@ -98,7 +155,7 @@ class RegistrationActivity : AppCompatActivity() {
                     startActivity(Intent(this@RegistrationActivity, LoginActivity::class.java))
                     finish()
                 }
-            }
+            }*/
         }
         binding.loginConnectorText.setOnClickListener{
             startActivity(Intent(this@RegistrationActivity, LoginActivity::class.java))

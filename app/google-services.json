@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "644434053360",
+    "project_id": "dreamjournal-4a873",
+    "storage_bucket": "dreamjournal-4a873.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644434053360:android:7bc7e2a7d06de178909a35",
+        "android_client_info": {
+          "package_name": "com.gigacrew.dreamjournal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClZOBWyOadp09gfrn-R8eu5PqJ7ohaMWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
