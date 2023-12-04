@@ -3,124 +3,96 @@ package com.gigacrew.dreamjournal
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SearchView
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
+
 import android.widget.Toast
-import androidx.core.view.isVisible
+import android.widget.Toolbar
+
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+
 import com.gigacrew.dreamjournal.databinding.ActivityDashboardBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+
 
 class DashboardActivity : AppCompatActivity(),
     DreamListAdapter.OnItemClickListener,
-    DreamListAdapter.OnDeleteClickListener{
+    DreamListAdapter.OnDeleteClickListener {
 
-    private lateinit var menuButton: ImageButton
-    private lateinit var welcomeText: TextView
     private lateinit var profileButton: ImageButton
-    private lateinit var filterButton: ImageButton
     private lateinit var searchView: SearchView
-    private lateinit var viewAllButton: Button
-    private lateinit var addButton: Button
+    private lateinit var addButton: ImageButton
+
 
     private lateinit var binding: ActivityDashboardBinding
-    private lateinit var database: AppDatabase
-    private lateinit var loggedInUser: User
+    private lateinit var database: FirebaseFirestore
+    private lateinit var loggedInUser: FirebaseUser
     private val dreams: ArrayList<Dream> = ArrayList()
-    private lateinit var dreamListAdapter:DreamListAdapter
+    private lateinit var dreamListAdapter: DreamListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        database = AppDatabase.getDatabase(this)
-
-       /* Previous code....
-        GlobalScope.launch(Dispatchers.Main) {
-            loggedInUser = database.userDao().getUserById(intent.getIntExtra("userID", 0))!!
-
-            fetchDreams()
-            welcomeText.text = "Welcome Back, ${loggedInUser.firstname}"
-        }*/
-
-//        val intent = intent
-//        val username = intent.getStringExtra("username")
-//        val firstName = intent.getStringExtra("firstName")
-//        val lastName = intent.getStringExtra("lastName")
-       // welcomeText.text = "Welcome Back, $firstName"
-        // Retrieve values from the Intent
-
-      //  val firstName = intent.getStringExtra("firstName")
+        database = FirebaseFirestore.getInstance()
 
 
-        // Assuming you have TextViews in your layout with IDs usernameTextView, firstNameTextView, lastNameTextView
-
-      //  val firstNameTextView: TextView = findViewById(R.id.firstNameTextView)
-
-
-        // Set the values to the TextViews
-
-      //  welcomeText.text = "First Name: $firstName"
-
-
+        loggedInUser = FirebaseAuth.getInstance().currentUser!!
+        val userId = loggedInUser.uid
+        if (userId.isNotEmpty()) {
+            database.collection("users").document(userId).get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val user = documentSnapshot.toObject(User::class.java)
+                    if (user != null) {
+                        binding.toolbar.toolbarTitle.setText("Welcome Back, ${user.username}")
+                    }
+                }
+        }
         // Initialize your views
-        menuButton = binding.menuButton
-        welcomeText = binding.welcomeText
+
+
         profileButton = binding.profileButton
-        filterButton = binding.filterButton
         searchView = binding.searchView
-        viewAllButton = binding.viewAllButton
         addButton = binding.addButton
 
-        dreamListAdapter = DreamListAdapter(dreams,this,this)
+
+        dreamListAdapter = DreamListAdapter(dreams, this, this)
         binding.dashboardRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.dashboardRecyclerView.adapter = dreamListAdapter
 
-
-
-        menuButton.setOnClickListener { /* Handle menu button click */ }
-
-
         profileButton.setOnClickListener {
-            val intent = Intent(this,ProfileActivity::class.java)
-            intent.putExtra("userID",loggedInUser.user_id)
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra("userID", loggedInUser.uid)
             startActivity(intent)
         }
 
-
-        filterButton.setOnClickListener { /* Handle filter button click */ }
-
-        binding.seeAllDreamsBtn.setOnClickListener{
-            val intent = Intent(this,DreamListViewActivity::class.java)
-            intent.putExtra("userID",loggedInUser.user_id)
-            startActivity(intent)
-        }
-        viewAllButton.setOnClickListener {
-            val intent = Intent(this,DreamListViewActivity::class.java)
-            intent.putExtra("userID",loggedInUser.user_id)
+        binding.seeAllDreamsBtn.setOnClickListener {
+            val intent = Intent(this, DreamListViewActivity::class.java)
+            intent.putExtra("userID", loggedInUser.uid)
             startActivity(intent)
         }
 
+        fetchDreams()
 
+        binding.toolbar.leftActionButton.setOnClickListener {
+            val intent = Intent(this, AddNewDreamActivity::class.java)
+            intent.putExtra("userID", loggedInUser.uid)
+            startActivity(intent)
+        }
         addButton.setOnClickListener {
-            val intent = Intent(this,AddNewDreamActivity::class.java)
-            intent.putExtra("userID",loggedInUser.user_id)
+            val intent = Intent(this, AddNewDreamActivity::class.java)
+            intent.putExtra("userID", loggedInUser.uid)
             startActivity(intent)
         }
-
+        binding.toolbar.logoutButton.setOnClickListener {
+            logout()
+        }
 
         // Set a query listener for the search view
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -143,9 +115,9 @@ class DashboardActivity : AppCompatActivity(),
     }
 
     override fun onItemClick(dream: Dream) {
-        val intent = Intent(this,AddNewDreamActivity::class.java)
-        intent.putExtra("dreamID", dream.dream_id)
-        intent.putExtra("userID",loggedInUser.user_id)
+        val intent = Intent(this, AddNewDreamActivity::class.java)
+        intent.putExtra("dreamID", dream.dreamId)
+        intent.putExtra("userID", loggedInUser.uid)
         startActivity(intent)
     }
 
@@ -154,25 +126,37 @@ class DashboardActivity : AppCompatActivity(),
     }
 
     private fun fetchDreams() {
-        GlobalScope.launch(Dispatchers.Main) {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    Log.i("Dreams", "User Logged In , $loggedInUser")
-                    database.dreamDAO().getAllDreamsForUser(loggedInUser.user_id) //
+        database.collection("dreams")
+            .whereEqualTo("userId", loggedInUser.uid)
+            .orderBy("date", Query.Direction.DESCENDING) // Assuming 'date' is the field to sort by
+            .limit(3)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                dreams.clear() // Clear existing items
+                for (document in querySnapshot.documents) {
+                    val dream = document.toObject(Dream::class.java)
+                    dream!!.dreamId = document.id
+
+                    dream?.let {
+                        dreams.add(it) // Add dream to the list
+                    }
                 }
-                dreams.clear()
-                dreams.addAll(response)
-                dreams.reverse()
-                dreams.subList(3,dreams.size).clear()
-                dreamListAdapter.notifyDataSetChanged()
-            } catch (e: Exception) {
-                displayErrorMessage("Failed to fetch dreams. Error: ${e.message}", "Fetch Error")
+                Log.d("Dream ID RV", dreams.toString())
+                binding.dashboardRecyclerView.adapter?.notifyDataSetChanged() // Notify the adapter
             }
-        }
+            .addOnFailureListener { e ->
+                displayErrorMessage(e.message ?: "Error fetching dreams", "FetchDreamsError")
+            }
     }
-    private fun displayErrorMessage(message: String,errorTag : String) {
+
+    private fun displayErrorMessage(message: String, errorTag: String) {
         Toast.makeText(this, "Error: $message", Toast.LENGTH_LONG).show()
-        Log.e(errorTag,"Failed to fetch dreams. Response code: $message" )
+        Log.e(errorTag, "Failed to fetch dreams. Response code: $message")
+    }
+
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 
 }

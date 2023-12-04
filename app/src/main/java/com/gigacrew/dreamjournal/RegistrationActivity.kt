@@ -25,7 +25,6 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var confirmPassword: EditText
     private lateinit var continueBtn:Button
 
-    private lateinit var database: AppDatabase
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDB: FirebaseFirestore
 
@@ -33,7 +32,6 @@ class RegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        database = AppDatabase.getDatabase(this)
 
         firstName = binding.firstNameEditText
         lastName = binding.lastNameEditText
@@ -59,14 +57,12 @@ class RegistrationActivity : AppCompatActivity() {
 
             var hasError = false
             if (firstNameText.isNotEmpty() && lastNameText.isNotEmpty() && usernameText.isNotEmpty() && emailText.isNotEmpty() && passwordText.isNotEmpty() && confirmPasswordText.isNotEmpty()){
-                if (passwordText == confirmPasswordText){
+                if (passwordText !== confirmPasswordText) {
                     firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText)
                         .addOnCompleteListener(this) {task ->
                             if (task.isSuccessful){
-
                                 // User registration success
                                 val user = firebaseAuth.currentUser
-
                                 // Save additional user information to Firestore
                                 if (user != null) {
                                     val userId = user.uid
@@ -76,8 +72,6 @@ class RegistrationActivity : AppCompatActivity() {
                                         "lastname" to lastNameText,
                                         "email" to emailText
                                     )
-
-
                                     // Store user information in firestore
                                     firebaseDB.collection("users").document(userId)
                                         .set(userMap)
@@ -95,75 +89,19 @@ class RegistrationActivity : AppCompatActivity() {
                                             showToast("Data not Registered ")
                                         }
                                 }
-
-
-
-
-
-                            }else{
+                            } else {
                                 showToast("Unable to Register User")
                             }
-
                         }
-                }
-
-            }else{
-                showToast("Enter all the fields value")
-
-            }
-           /* Previous database code
-            if (firstNameText.isEmpty()) {
-                hasError = true
-                firstName.error = "First name is required"
-            }
-
-            if (lastNameText.isEmpty()) {
-                hasError = true
-                lastName.error = "Last name is required"
-            }
-            if (usernameText.isEmpty()) {
-                hasError = true
-                username.error = "Last name is required"
-            }
-
-            if (emailText.isEmpty()) {
-                hasError = true
-                email.error = "Email is required"
-            }
-
-            if (passwordText.isEmpty()) {
-                hasError = true
-                password.error = "Password is required"
-            }
-
-            if (confirmPasswordText.isEmpty()) {
-                hasError = true
-                confirmPassword.error = "Confirm Password is required"
-            } else if (confirmPasswordText != passwordText) {
-                hasError = true
-                confirmPassword.error = "Passwords do not match"
-            }
-
-            if (!hasError) {
-                val user = User(username = usernameText, firstname = firstNameText, lastname = lastNameText, email = emailText, password = passwordText, phone_number = " " )
-
-                GlobalScope.launch {
-                    database.userDao().insertUser(user)
-                    Log.i("UserCreation", "Created User $user")
-                    Looper.prepare()
-                    showToast("User Registered Successfully")
-                    startActivity(Intent(this@RegistrationActivity, LoginActivity::class.java))
-                    finish()
-                }
-            }*/
+                } else { showToast("Password and Confirm Password Fields do not Match")}
+            } else{ showToast("Enter all the fields value") }
         }
         binding.loginConnectorText.setOnClickListener{
             startActivity(Intent(this@RegistrationActivity, LoginActivity::class.java))
             finish()
         }
 
-        }
-
+    }
     private fun clearFieldErrors() {
         firstName.error = null
         lastName.error = null

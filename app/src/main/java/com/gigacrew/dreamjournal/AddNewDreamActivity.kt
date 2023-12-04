@@ -2,6 +2,7 @@ package com.gigacrew.dreamjournal
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -13,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.collection.ArrayMap
 import com.gigacrew.dreamjournal.databinding.ActivityNewdreamBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,7 +40,8 @@ class AddNewDreamActivity : AppCompatActivity() {
     private lateinit var category: Spinner
 
     private lateinit var binding: ActivityNewdreamBinding
-    private lateinit var database: AppDatabase
+    private lateinit var database: FirebaseFirestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,11 +50,23 @@ class AddNewDreamActivity : AppCompatActivity() {
 
         // TODO: Get the user_id from the intent that we get here from
 
-        val userID = intent.getIntExtra("userID",0)
-        val dreamID = intent.getIntExtra("dreamID",0)
+        val userID = FirebaseAuth.getInstance().currentUser!!.uid
+        val dreamID = intent.getStringExtra("dreamID") ?:""
+        Log.d("Dream ID",dreamID)
 
+        val stringValue = if (dreamID.isNotEmpty())
+            getString(R.string.update_dream)
+        else
+            getString(R.string.add_new_dream)
+        binding.toolbar.toolbarTitle.text = stringValue
+        binding.toolbar.leftActionButton.setImageResource(R.drawable.ic_back)
 
-        database = AppDatabase.getDatabase(this)
+        binding.toolbar.leftActionButton.setOnClickListener {
+            finish()
+        }
+
+        database = FirebaseFirestore.getInstance()
+        val dreamsCollection = database.collection("dreams")
         titleEditText = binding.titleEditText
         descriptionEditText = binding.descriptionEditText
         recurringSwitch = binding.recurringDreamSwitch
@@ -63,14 +80,22 @@ class AddNewDreamActivity : AppCompatActivity() {
         uploadButton = binding.uploadButton
         saveButton = binding.saveButton
 
-
-        if (dreamID > 0) {
-            GlobalScope.launch(Dispatchers.IO) {
-                 val dream = database.dreamDAO().getDreamById(dreamID)!!
-                setUpdateFields(dream)
+        if (dreamID.isNotEmpty()) {
+           dreamsCollection
+                .document(dreamID)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val dream = document.toObject(Dream::class.java)
+                        dream?.let { setUpdateFields(it) }
+                    } else {
+                        // Handle the case where the dream doesn't exist.
+                    }
+                }.addOnFailureListener {
+                    // Handle any failures here.
+                }
             }
 
-        }
 
         var selectedItem = ""
         val categoryOptions = resources.getStringArray(R.array.dream_categories)
@@ -78,7 +103,6 @@ class AddNewDreamActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,categoryOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-      
         category.adapter = adapter
 
         category.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -121,51 +145,60 @@ class AddNewDreamActivity : AppCompatActivity() {
             // Build the feelingsCheckedArray using the selected emotions
             val feelingsCheckedArray = ArrayList<String>(buildFeelingsArray(feelingsChecked))
 
-            if (dreamID > 0) {
-                GlobalScope.launch(Dispatchers.IO) {
-                    database.dreamDAO().updateDream(
-                        dreamId = dreamID,
-                        title = title,
-                        dreamDescription = description,
-                        recurringDream = recurringDream,
-                        feeling = feelingsCheckedArray,
-                        category = selectedItem,
-                        date = getCurrentDateTimeFormatted(),
-                        imageURL = "",
-                    )
+            if (dreamID.isNotEmpty()) {
+                 val dream = hashMapOf(
+                     "dreamId" to dreamID,
+                     "title" to title,
+                     "dreamDescription" to description,
+                     "recurringDream" to recurringDream,
+                     "feeling" to feelingsCheckedArray,
+                     "category" to selectedItem,
+                     "date" to getCurrentDateTimeFormatted(),
+                     "imageURL" to ""
+                 )
+                dreamsCollection.document(dreamID).set(dream, SetOptions.merge())
+                       .addOnSuccessListener {
+                           showToast("Dream Updated Successfully")
+                           val intent = Intent(this@AddNewDreamActivity,DashboardActivity::class.java)
+                           intent.putExtra("userID",userID)
+                           startActivity(intent)
+                           finish()
+                       }
 
-                }
-                showToast("Dream Updated Successfully")
-                val intent = Intent(this@AddNewDreamActivity,DashboardActivity::class.java)
-                intent.putExtra("userID",userID)
-                startActivity(intent)
-                finish()
             } else {
-                val newDream = Dream(
-                    title = title,
-                    dream_description = description,
-                    recurringDream = recurringDream,
-                    feeling = feelingsCheckedArray,
-                    category = selectedItem,
-                    date = getCurrentDateTimeFormatted(),
-                    imageURL = "",
-                    user_id = userID
+                val newDream = hashMapOf(
+                    "title" to title,
+                    "dreamDescription" to description,
+                    "recurringDream" to recurringDream,
+                    "feeling" to feelingsCheckedArray,
+                    "category" to selectedItem,
+                    "date" to getCurrentDateTimeFormatted(),
+                    "imageURL" to "",
+                    "userId" to userID
                 )
-                GlobalScope.launch(Dispatchers.IO) {
-                    database.dreamDAO().insertDream(newDream)
-                }
-                showToast("Dream Added Successfully")
-                val intent = Intent(this@AddNewDreamActivity,DashboardActivity::class.java)
-                intent.putExtra("userID",userID)
-                startActivity(intent)
-               finish()
+
+                // Adding the new dream to Firestore and letting Firestore generate a unique ID
+                dreamsCollection.add(newDream)
+                    .addOnSuccessListener { documentReference ->
+                        showToast("Dream Added Successfully with ID: ${documentReference.id}")
+                        val intent = Intent(this@AddNewDreamActivity, DashboardActivity::class.java)
+                        intent.putExtra("userID", userID)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        showToast("Error adding dream: ${e.message}")
+                    }
             }
+        }
+        binding.toolbar.logoutButton.setOnClickListener {
+            logout()
         }
     }
 
     private fun setUpdateFields(dream: Dream) {
         titleEditText.setText(dream.title)
-        descriptionEditText.setText(dream.dream_description)
+        descriptionEditText.setText(dream.dreamDescription)
         recurringSwitch.isChecked = dream.recurringDream
         // Set checkboxes based on the feelings in the dream
         checkboxHappy.isChecked = dream.feeling.contains("Happy")
@@ -199,5 +232,9 @@ class AddNewDreamActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 }

@@ -10,7 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gigacrew.dreamjournal.databinding.ActivityLoginBinding
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,20 +24,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var fbLoginButton: ImageButton
     private lateinit var googleLoginButton: ImageButton
     private lateinit var createAccountTextView: TextView
-    
+
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var database: AppDatabase
+
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDB: FirebaseFirestore
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        database = AppDatabase.getDatabase(this)
         logUsernameEditText = binding.loginUsernameEditText
         logPasswordEditText = binding.loginPasswordEditText
         loginButton = binding.loginBtn
@@ -48,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
         googleLoginButton = binding.googleLoginBtn
         createAccountTextView = binding.createAccountTextView
 
-         firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
         firebaseDB = FirebaseFirestore.getInstance()
 
         // Add click listener for the login button
@@ -56,18 +53,6 @@ class LoginActivity : AppCompatActivity() {
             // Retrieve the entered username and password
             val username = logUsernameEditText.text.toString()
             val password = logPasswordEditText.text.toString()
-            /* Previous database code
-            GlobalScope.launch(Dispatchers.IO) {
-                val user = database.userDao().getUserByLoginCredentials(username, password)
-                if (user != null) {
-                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
-                    intent.putExtra("userID", user.user_id)
-                    startActivity(intent)
-                } else {
-                    showToast("Invalid credentials. Please try again.")
-                }
-            }*/
-
             if (username.isNotEmpty() && password.isNotEmpty()){
 
                 // Perform a query to check if the username already exists
@@ -87,7 +72,6 @@ class LoginActivity : AppCompatActivity() {
                                 showToast("User Login Successfully")
                                 // Now 'uid' contains the user ID
                                 // You can use this ID to uniquely identify the user in your Firebase Database or other services
-                                print("User id firebase: $uid")
                                 // Retrieve user information
                                 firebaseDB.collection("users").document(currentUser.uid)
                                     .get()
@@ -99,16 +83,11 @@ class LoginActivity : AppCompatActivity() {
                                             val lastName = documentSnapshot.getString("lastname")
                                             val email = documentSnapshot.getString("email")
 
-                                            //  Log.d("TAG", "Username: $username, First Name: $firstName, Last Name: $lastName, Email: $email")
-
-                                            // TODO: Use the retrieved data in your application
                                             val intent = Intent(this, DashboardActivity::class.java)
                                             intent.putExtra("userID", uid)
                                             intent.putExtra("firstName", firstName)
                                             startActivity(intent)
                                             finish()
-
-
                                         } else {
                                             showToast("User does not exist")
                                         }
@@ -119,42 +98,6 @@ class LoginActivity : AppCompatActivity() {
                             }
 
                         }
-
-
-                        //Code for signing with email and password, here below passes email id instead of username
-                        /*  firebaseAuth.signInWithEmailAndPassword(username, password)
-                    .addOnCompleteListener(this) {task ->
-                        if (task.isSuccessful){
-
-
-                            val currentUser: FirebaseUser? = firebaseAuth.currentUser
-                            if (currentUser != null) {
-                                // User is signed in, you can get the UID
-                                val uid: String = currentUser.uid
-                                showToast("User Login Successfully")
-                                // Now 'uid' contains the user ID
-                                // You can use this ID to uniquely identify the user in your Firebase Database or other services
-
-
-                                print("User id firebase: $uid")
-                                val intent = Intent(this,DashboardActivity::class.java)
-                                intent.putExtra("userID", uid)
-                                startActivity(intent)
-                                finish()
-
-
-                            } else {
-                                // User is not signed in
-                                // Handle the case where no user is signed in
-                                showToast("Invalid credentials. Please try again.")
-                            }
-
-
-                        }
-                        else{
-                            showToast("Login failed")
-                        }*/
-
                     }
             }else{
                 showToast("Enter all the fields value")

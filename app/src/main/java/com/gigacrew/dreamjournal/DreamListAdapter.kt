@@ -30,7 +30,7 @@ class DreamListAdapter(
         val dream = dreamList[position]
         holder.binding.TitleTextView.text = dream.title
         holder.binding.dateTextView.text = dream.date
-        holder.binding.descriptionTextView.text = dream.dream_description
+        holder.binding.descriptionTextView.text = dream.dreamDescription
         holder.itemView.setOnClickListener{
             listener.onItemClick(dream)
         }

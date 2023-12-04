@@ -1,6 +1,14 @@
 <!-- res/layout/activity_profile.xml -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_custom"
+        />
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
@@ -15,23 +23,13 @@
         android:scaleType="fitCenter"
         android:layout_marginTop="24dp"/>
 
-    <TextView
-        android:id="@+id/editProfileTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/profileImageView"
-        android:layout_centerHorizontal="true"
-        android:text="Edit Profile"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp"/>
 
     <EditText
         android:id="@+id/firstNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editProfileTextView"
-        android:hint="First Name"
+        android:layout_below="@id/profileImageView"
+        android:hint="@string/first_name"
         android:textSize="22sp"
         android:layout_marginTop="32dp"/>
 
@@ -40,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/firstNameEditText"
-        android:hint="Last Name"
+        android:hint="@string/last_name"
         android:textSize="22sp"
         android:layout_marginTop="16dp"/>
 
@@ -49,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/lastNameEditText"
-        android:hint="Phone Number"
+        android:hint="@string/phone_number"
         android:textSize="22sp"
         android:layout_marginTop="16dp"/>
 
@@ -58,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/phoneNumberEditText"
-        android:hint="User Name"
+        android:hint="@string/user_name"
         android:textSize="22sp"
         android:layout_marginTop="16dp"/>
 
@@ -67,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/usernameEditText"
-        android:text="Update"
+        android:text="@string/update"
         android:textSize="21sp"
         android:background="@android:color/holo_orange_light"
         android:textColor="@android:color/white"
@@ -78,10 +76,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/updateButton"
-        android:text="Add New Journal Entry"
+        android:text="@string/add_new_journal_entry"
         android:textSize="21sp"
         android:background="@android:color/holo_orange_light"
         android:textColor="@android:color/white"
         android:layout_marginTop="24dp"/>
 
 </RelativeLayout>
+</LinearLayout>
