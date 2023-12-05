@@ -7,6 +7,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gigacrew.dreamjournal.databinding.ActivityDreamListViewBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,50 +23,59 @@ DreamListAdapter.OnDeleteClickListener{
     private lateinit var binding: ActivityDreamListViewBinding
     private val dreams :ArrayList<Dream> = ArrayList()
     private lateinit var dreamListAdapter:DreamListAdapter
-    private lateinit var database:AppDatabase
-    private lateinit var currentUser:User;
+    private lateinit var database:FirebaseFirestore
+    private lateinit var currentUser: FirebaseUser;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDreamListViewBinding.inflate(layoutInflater)
-        database = AppDatabase.getDatabase(this)
+        database = FirebaseFirestore.getInstance()
         setContentView(binding.root)
-        database = AppDatabase.getDatabase(this)
-        val loggedInUserID = intent.getIntExtra("userID",0)
         dreamListAdapter = DreamListAdapter(dreams,this,this)
         binding.dreamRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.dreamRecyclerView.adapter = dreamListAdapter
-        GlobalScope.launch {
-            currentUser = database.userDao().getUserById(loggedInUserID)!!
-        }
+        currentUser = FirebaseAuth.getInstance().currentUser!!
+
         fetchDreams()
         binding.newDreamButton.setOnClickListener{
             val intent = Intent(this,AddNewDreamActivity::class.java)
-            intent.putExtra("userID",currentUser.user_id)
+            intent.putExtra("userID",currentUser.uid)
             startActivity(intent)
+        }
+        binding.toolbar.leftActionButton.setImageResource(R.drawable.ic_back)
+
+        binding.toolbar.leftActionButton.setOnClickListener {
+            finish()
+        }
+        binding.toolbar.toolbarTitle.setText("Dream List")
+        binding.toolbar.logoutButton.setOnClickListener {
+            logout()
         }
     }
 
-    private fun fetchDreams(){
-        GlobalScope.launch (Dispatchers.Main){
-            try {
-                val response = withContext(Dispatchers.IO){
-                    Log.i("Dreams", "User Logged In , $currentUser")
-                    database.dreamDAO().getAllDreamsForUser(currentUser.user_id) //
+
+    private fun fetchDreams() {
+        database.collection("dreams")
+            .whereEqualTo("userId", currentUser.uid)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                dreams.clear() // Clear existing items
+                for (document in querySnapshot.documents) {
+                    val dream = document.toObject(Dream::class.java)
+                    dream?.let {
+                        dreams.add(it) // Add dream to the list
+                    }
                 }
-                dreams.clear()
-                dreams.addAll(response)
-                dreams.reverse()
-                dreamListAdapter.notifyDataSetChanged()
-            }catch (e:Exception){
-                displayErrorMessage("Failed to fetch dreams. Error: ${e.message}","Fetch Error")
+                dreamListAdapter.notifyDataSetChanged() // Notify the adapter
             }
-        }
+            .addOnFailureListener { e ->
+                displayErrorMessage(e.message ?: "Error fetching dreams", "FetchDreamsError")
+            }
     }
 
     override fun onItemClick(dream: Dream) {
         val intent = Intent(this,AddNewDreamActivity::class.java)
-        intent.putExtra("dreamID", dream.dream_id)
+        intent.putExtra("dreamID", dream.dreamId)
         startActivity(intent)
     }
 
@@ -74,6 +86,10 @@ DreamListAdapter.OnDeleteClickListener{
     private fun displayErrorMessage(message: String,errorTag : String) {
         Toast.makeText(this, "Error: $message", Toast.LENGTH_LONG).show()
         Log.e(errorTag,"Failed to fetch dreams. Response code: $message" )
+    }
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 
 }

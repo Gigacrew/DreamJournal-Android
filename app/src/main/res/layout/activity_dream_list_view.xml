@@ -7,6 +7,11 @@
     android:orientation="vertical"
     tools:context=".DreamListViewActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_custom"
+        />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/newDreamButton"
         android:layout_width="match_parent"
@@ -19,19 +24,12 @@
         app:tint="@color/white"
         app:backgroundTint="@color/primaryColour"
         app:srcCompat="@android:drawable/ic_input_add" />
-
-    <TextView
-        android:id="@+id/DreamListViewHeaderTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dream List View"
-        android:textAlignment="center"
-        android:textSize="24sp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dreamRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
 
 
 

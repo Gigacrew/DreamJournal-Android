@@ -2,6 +2,7 @@ package com.gigacrew.dreamjournal
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -9,9 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gigacrew.dreamjournal.databinding.ActivityLoginBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
@@ -23,16 +24,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var fbLoginButton: ImageButton
     private lateinit var googleLoginButton: ImageButton
     private lateinit var createAccountTextView: TextView
-    
+
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var database: AppDatabase
+
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firebaseDB: FirebaseFirestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        database = AppDatabase.getDatabase(this)
         logUsernameEditText = binding.loginUsernameEditText
         logPasswordEditText = binding.loginPasswordEditText
         loginButton = binding.loginBtn
@@ -42,23 +45,62 @@ class LoginActivity : AppCompatActivity() {
         googleLoginButton = binding.googleLoginBtn
         createAccountTextView = binding.createAccountTextView
 
-
+        firebaseAuth = FirebaseAuth.getInstance()
+        firebaseDB = FirebaseFirestore.getInstance()
 
         // Add click listener for the login button
         loginButton.setOnClickListener {
             // Retrieve the entered username and password
             val username = logUsernameEditText.text.toString()
             val password = logPasswordEditText.text.toString()
+            if (username.isNotEmpty() && password.isNotEmpty()){
 
-            GlobalScope.launch(Dispatchers.IO) {
-                val user = database.userDao().getUserByLoginCredentials(username, password)
-                if (user != null) {
-                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
-                    intent.putExtra("userID", user.user_id)
-                    startActivity(intent)
-                } else {
-                    showToast("Invalid credentials. Please try again.")
-                }
+                // Perform a query to check if the username already exists
+                firebaseDB.collection("users")
+                    .whereEqualTo("username", username)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (documents.isEmpty) {
+                            showToast("Username is not found, you can proceed with registration")
+                        } else {
+                            // Username is already taken
+                            Log.d("TAG", "Username is already taken.")
+                            val currentUser: FirebaseUser? = firebaseAuth.currentUser
+                            if (currentUser != null) {
+                                // User is signed in, you can get the UID
+                                val uid: String = currentUser.uid
+                                showToast("User Login Successfully")
+                                // Now 'uid' contains the user ID
+                                // You can use this ID to uniquely identify the user in your Firebase Database or other services
+                                // Retrieve user information
+                                firebaseDB.collection("users").document(currentUser.uid)
+                                    .get()
+                                    .addOnSuccessListener { documentSnapshot ->
+                                        if (documentSnapshot.exists()) {
+                                            // Document exists, retrieve data
+                                            val userName = documentSnapshot.getString("username")
+                                            val firstName = documentSnapshot.getString("firstname")
+                                            val lastName = documentSnapshot.getString("lastname")
+                                            val email = documentSnapshot.getString("email")
+
+                                            val intent = Intent(this, DashboardActivity::class.java)
+                                            intent.putExtra("userID", uid)
+                                            intent.putExtra("firstName", firstName)
+                                            startActivity(intent)
+                                            finish()
+                                        } else {
+                                            showToast("User does not exist")
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e("TAG", "Error retrieving user information: $e")
+                                    }
+                            }
+
+                        }
+                    }
+            }else{
+                showToast("Enter all the fields value")
             }
         }
 

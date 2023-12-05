@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">DreamJournal</string>
+    <string name="app_name">Dream Journal</string>
     <string name="add_title">Add Title</string>
-    <string name="NewDreamHeading">ADD NEW DREAM</string>
     <string name="type_here">type here</string>
     <string name="add_description">Add Description</string>
     <string name="add_category">Add Category</string>
     <string name="add_feeling">Add Feeling</string>
+    <string name="update_profile">Update User Profile</string>
     <string name="happy">Happy</string>
     <string name="sad">Sad</string>
     <string name="angry">Angry</string>
@@ -34,10 +34,17 @@
     <string name="usernameLabel">Username</string>
     <string name="usernameHint">Your username</string>
     <string name="add_new_dream">Add New Dream</string>
+    <string name="update_dream">Update Your Dream</string>
     <string name="not_registered_yet">Not registered yet ?</string>
     <string name="signupSectionHeader">-------Or Sign Up with------</string>
     <string name="view_all">"View All "</string>
     <string name="search_your_dreams">Search your dreams</string>
+    <string name="update">Update User</string>
+    <string name="add_new_journal_entry">Add New Journal Entry</string>
+    <string name="user_name">User Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
     <string-array name="dream_categories">
         <item>Choose Category from List</item>
         <item>Good Dream</item>

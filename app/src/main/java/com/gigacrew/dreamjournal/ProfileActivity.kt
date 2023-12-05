@@ -1,73 +1,72 @@
 package com.gigacrew.dreamjournal
+
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.gigacrew.dreamjournal.R
 import com.gigacrew.dreamjournal.databinding.ActivityProfileBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
-    private lateinit var database: AppDatabase
-    private lateinit var user: User
+    private lateinit var database: FirebaseFirestore
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        database = AppDatabase.getDatabase(this)
+        database = FirebaseFirestore.getInstance()
 
-        lifecycleScope.launch {
-            // Retrieve user data from the database on the IO dispatcher
-            user = withContext(Dispatchers.IO) {
-                database.userDao().getUserById(intent.getIntExtra("userID", 0))
-            }!!
-            updateUIWithUserData()
+        userId = intent.getStringExtra("userID") ?: ""
+
+        binding.toolbar.toolbarTitle.setText(R.string.update_profile)
+        binding.toolbar.leftActionButton.setImageResource(R.drawable.ic_back)
+
+        binding.toolbar.leftActionButton.setOnClickListener {
+            finish()
         }
 
+        if (userId.isNotEmpty()) {
+            database.collection("users").document(userId).get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val user = documentSnapshot.toObject(User::class.java)
+                    user?.let { updateUIWithUserData(it) }
+                }
+        }
 
-
-
-        // Set click listeners for buttons (updateButton and addNewJournalButton) if needed
         binding.updateButton.setOnClickListener {
-            GlobalScope.launch {
-                database.userDao().updateUser(
-                    userId = user.user_id,
-                    username= binding.usernameEditText.text.toString(),
-                    email = user.email,
-                    firstname = binding.firstNameEditText.text.toString(),
-                    lastname = binding.lastNameEditText.text.toString(),
-                    phoneNumber = binding.phoneNumberEditText.text.toString(),
-                    password = user.password
-                )
-            }
-            finish()
+            val updatedUser = hashMapOf(
+                "username" to binding.usernameEditText.text.toString(),
+                "firstname" to binding.firstNameEditText.text.toString(),
+                "lastname" to binding.lastNameEditText.text.toString(),
+                "phoneNumber" to binding.phoneNumberEditText.text.toString()
+            )
+
+            database.collection("users").document(userId).update(updatedUser as Map<String, Any>)
+                .addOnSuccessListener { finish() }
+                .addOnFailureListener { e -> /* Handle failure */ }
         }
 
         binding.addJournalEntryButton.setOnClickListener {
-          val intent = Intent(this,AddNewDreamActivity::class.java)
-            intent.putExtra("userID",user.user_id)
+            val intent = Intent(this, AddNewDreamActivity::class.java)
+            intent.putExtra("userID", userId)
             startActivity(intent)
-            finish()
-
+        }
+        binding.toolbar.logoutButton.setOnClickListener {
+            logout()
         }
     }
-        private fun updateUIWithUserData() {
-            val username = user.username
-            val firstName = user.firstname
-            val lastName = user.lastname
-            val phoneNumber = user.phone_number
 
-            binding.usernameEditText.setText(username)
-            binding.firstNameEditText.setText(firstName)
-            binding.lastNameEditText.setText(lastName)
-            binding.phoneNumberEditText.setText(phoneNumber)
-        }
+    private fun updateUIWithUserData(user: User) {
+        binding.usernameEditText.setText(user.username)
+        binding.firstNameEditText.setText(user.firstname)
+        binding.lastNameEditText.setText(user.lastname)
+        binding.phoneNumberEditText.setText(user.phoneNumber)
+
+    }
+
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
 }
